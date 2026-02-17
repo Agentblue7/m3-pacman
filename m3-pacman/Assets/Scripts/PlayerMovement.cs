@@ -1,71 +1,113 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
-    private Rigidbody2D rb;
-    private Vector2 movement;
-    private Vector2 movementDirection;
+    public float moveSpeed = 5f;
+
+    private Vector2 moveDirection;
+    private Vector2 nextDirection;
+    private bool isMoving = false;
+    private Vector3 targetPosition;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        transform.position = RoundToGrid(transform.position);
+        targetPosition = transform.position;
     }
 
     void Update()
     {
-        // Get input
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
-            movementDirection = Vector2.up;
+        HandleInput();
 
-        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
-            movementDirection = Vector2.down;
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-            movementDirection = Vector2.left;
-
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-            movementDirection = Vector2.right;
+        if (!isMoving)
+        {
+            TryMove(nextDirection);
+        }
     }
 
-
-        void FixedUpdate()
+    void FixedUpdate()
+    {
+        if (isMoving)
         {
-            // changing direction 
-            if (CanMove(movementDirection))
-            {
-                movement = movementDirection;
-            }
-
-            // keeping direction
-            if (CanMove(movement))
-            {
-                rb.linearVelocity = movement * speed;
-            }
-            else
-            {
-                rb.linearVelocity = Vector2.zero;
-            }
-        }
-
-        bool CanMove(Vector2 direction)
-        {
-            if (direction == Vector2.zero)
-                return false;
-
-            RaycastHit2D hit = Physics2D.Raycast(
+            transform.position = Vector3.MoveTowards(
                 transform.position,
-                direction,
-                0.55f
+                targetPosition,
+                moveSpeed * Time.fixedDeltaTime
             );
 
-            if (hit.collider != null)
+            if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
             {
-                if (hit.collider.CompareTag("Wall"))
-                    return false;
-            }
+                transform.position = targetPosition;
+                isMoving = false;
 
-            return true;
+                // continue moving if holding direction
+                TryMove(nextDirection);
+            }
         }
     }
+
+    void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            nextDirection = Vector2.up;
+
+        if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            nextDirection = Vector2.down;
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            nextDirection = Vector2.left;
+
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            nextDirection = Vector2.right;
+    }
+
+    void SpriteDirection()
+    {
+        if (moveDirection == Vector2.up)
+            transform.rotation = Quaternion.Euler(0, 0, 90);
+
+        else if (moveDirection == Vector2.down)
+            transform.rotation = Quaternion.Euler(0, 0, -90);
+
+        else if (moveDirection == Vector2.left)
+            transform.rotation = Quaternion.Euler(0, 0, 180);
+
+        else if (moveDirection == Vector2.right)
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    void TryMove(Vector2 direction)
+    {
+        if (direction == Vector2.zero)
+            return;
+
+        Vector3 newPosition = targetPosition + (Vector3)direction;
+
+        if (!IsWall(newPosition))
+        {
+            moveDirection = direction;
+            targetPosition = newPosition;
+            isMoving = true;
+
+            SpriteDirection();
+        }
+    }
+
+    bool IsWall(Vector3 position)
+    {
+        Collider2D hit = Physics2D.OverlapCircle(position, 0.2f);
+        if (hit != null && hit.CompareTag("Wall"))
+            return true;
+
+        return false;
+    }
+
+    Vector3 RoundToGrid(Vector3 pos)
+    {
+        return new Vector3(
+            Mathf.Round(pos.x),
+            Mathf.Round(pos.y),
+            0
+        );
+    }
+}
