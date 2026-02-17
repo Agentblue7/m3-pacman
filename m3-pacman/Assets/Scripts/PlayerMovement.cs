@@ -34,18 +34,18 @@ public class PlayerMovement : MonoBehaviour
                 targetPosition,
                 moveSpeed * Time.fixedDeltaTime
             );
-
+                //gaat de kant op blijven bewegen
             if (Vector3.Distance(transform.position, targetPosition) < 0.001f)
             {
                 transform.position = targetPosition;
                 isMoving = false;
 
-                // continue moving if holding direction
+                
                 TryMove(nextDirection);
             }
         }
     }
-
+    //player keybinds
     void HandleInput()
     {
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             nextDirection = Vector2.right;
     }
-
+    //sprite responsiveness
     void SpriteDirection()
     {
         if (moveDirection == Vector2.up)
@@ -75,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
         else if (moveDirection == Vector2.right)
             transform.rotation = Quaternion.Euler(0, 0, 0);
     }
-
+    //kijkt of player kan blijven bewegen en stopt als de player een muur tegen komt
     void TryMove(Vector2 direction)
     {
         if (direction == Vector2.zero)
@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
             SpriteDirection();
         }
     }
-
+    //checkt of er een muur is of niet
     bool IsWall(Vector3 position)
     {
         Collider2D hit = Physics2D.OverlapCircle(position, 0.2f);
@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
 
         return false;
     }
-
+    //grid movement word naar hele ints convert
     Vector3 RoundToGrid(Vector3 pos)
     {
         return new Vector3(
