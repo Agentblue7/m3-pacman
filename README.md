@@ -14,3 +14,11 @@ ik moet een level maken en laten genereren met een array systeem.
 het was niet veel moeite was wel leuk.
 
 https://github.com/Agentblue7/m3-pacman/blob/master/m3-pacman/Assets/Scripts/GridGenerator.cs
+
+3.1
+Ik moest een bewegings systeem maken en ik heb gekozen voor een klassieke pac man grid systeem 
+![bandicam2026-02-1712-49-27-691-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/b7cc421f-96e6-40d1-8458-051f61e4fc01)
+
+deze opdracht was een stuk moeilijker ik heb een paar videos moeten kijken maar het werkt nu goed
+https://github.com/Agentblue7/m3-pacman/blob/master/m3-pacman/Assets/Scripts/PlayerMovement.cs
+https://github.com/Agentblue7/m3-pacman/blob/master/m3-pacman/Assets/Scripts/DotCollect.cs
