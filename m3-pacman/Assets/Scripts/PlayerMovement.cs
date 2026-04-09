@@ -11,12 +11,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        // start voor grid based movement 
         transform.position = RoundToGrid(transform.position);
         targetPosition = transform.position;
     }
 
     void Update()
     {
+        //stored je input voor betere movement bij corners
         HandleInput();
 
         if (!isMoving)
@@ -60,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             nextDirection = Vector2.right;
     }
-    //sprite responsiveness
+    //sprite rotation
     void SpriteDirection()
     {
         if (moveDirection == Vector2.up)
@@ -109,5 +111,13 @@ public class PlayerMovement : MonoBehaviour
             Mathf.Round(pos.y),
             0
         );
+    }
+    //gaat dood als een enemy je aanraakt
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            Destroy(gameObject);
+        }
     }
 }
