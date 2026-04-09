@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerChase : MonoBehaviour
 {
@@ -14,7 +15,20 @@ public class PlayerChase : MonoBehaviour
     {
         targetPosition = transform.position;
     }
+    void RotateSprite(Vector2 dir)
+    {
+        if (dir == Vector2.up)
+            transform.rotation = Quaternion.Euler(0, 0, 180);
 
+        else if (dir == Vector2.down)
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        else if (dir == Vector2.left)
+            transform.rotation = Quaternion.Euler(0, 0, -90);
+
+        else if (dir == Vector2.right)
+            transform.rotation = Quaternion.Euler(0, 0, 90);
+    }
     void Update()
     {
         if (!moving)
@@ -23,15 +37,13 @@ public class PlayerChase : MonoBehaviour
 
             lastDir = dir;
 
+            RotateSprite(dir);
+
             targetPosition = transform.position + (Vector3)(dir * moveDistance);
             moving = true;
         }
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetPosition,
-            speed * Time.deltaTime
-        );
+        transform.position = Vector3.MoveTowards(transform.position,targetPosition, speed * Time.deltaTime);
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
             moving = false;
