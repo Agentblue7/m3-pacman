@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class WaypointFollower : MonoBehaviour
 {
+    Quaternion targetRotation;
     private Vector2 moveDirection;
     public Transform[] waypoints;
     public float speed = 3f;
@@ -16,20 +17,23 @@ public class WaypointFollower : MonoBehaviour
         if (Mathf.Abs(moveDirection.x) > Mathf.Abs(moveDirection.y))
         {
             if (moveDirection.x > 0)
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                targetRotation = Quaternion.Euler(0, 0, 0);
             else
-                transform.rotation = Quaternion.Euler(0, 0, 180);
+                targetRotation = Quaternion.Euler(0, 0, 180);
         }
         else
         {
             if (moveDirection.y > 0)
-                transform.rotation = Quaternion.Euler(0, 0, 90);
+                targetRotation = Quaternion.Euler(0, 0, 90);
             else
-                transform.rotation = Quaternion.Euler(0, 0, -90);
+                targetRotation = Quaternion.Euler(0, 0, -90);
         }
     }
     void Update()
     {
+        //smooth sprite rotation
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 720f * Time.deltaTime);
+
         if (waypoints.Length == 0) return;
 
         // Huidige waypoint

@@ -7,6 +7,7 @@ TagManager:
   - Dot
   - Wall
   - Enemy
+  - PowerUp
   layers:
   - Default
   - TransparentFX

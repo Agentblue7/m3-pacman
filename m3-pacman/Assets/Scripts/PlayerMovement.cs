@@ -4,6 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
 
+    Quaternion targetRotation;
+
     private Vector2 moveDirection;
     private Vector2 nextDirection;
     private bool isMoving = false;
@@ -18,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //smooth turning
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, 720f * Time.deltaTime);
+
         //stored je input voor betere movement bij corners
         HandleInput();
 
@@ -66,16 +71,16 @@ public class PlayerMovement : MonoBehaviour
     void SpriteDirection()
     {
         if (moveDirection == Vector2.up)
-            transform.rotation = Quaternion.Euler(0, 0, 90);
+            targetRotation = Quaternion.Euler(0, 0, 90);
 
         else if (moveDirection == Vector2.down)
-            transform.rotation = Quaternion.Euler(0, 0, -90);
+            targetRotation = Quaternion.Euler(0, 0, -90);
 
         else if (moveDirection == Vector2.left)
-            transform.rotation = Quaternion.Euler(0, 0, 180);
+            targetRotation = Quaternion.Euler(0, 0, 180);
 
         else if (moveDirection == Vector2.right)
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            targetRotation = Quaternion.Euler(0, 0, 0);
     }
     //kijkt of player kan blijven bewegen en stopt als de player een muur tegen komt
     void TryMove(Vector2 direction)

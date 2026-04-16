@@ -7,6 +7,9 @@ public class PlayerChase : MonoBehaviour
     public float speed = 3f;
     public float moveDistance = 1f;
 
+    Vector2 currentDir = Vector2.zero;
+    Quaternion targetRotation;
+
     private Vector3 targetPosition;
     private bool moving = false;
     Vector2 lastDir = Vector2.zero;
@@ -18,26 +21,31 @@ public class PlayerChase : MonoBehaviour
     void RotateSprite(Vector2 dir)
     {
         if (dir == Vector2.up)
-            transform.rotation = Quaternion.Euler(0, 0, 180);
+            targetRotation = Quaternion.Euler(0, 0, 180);
 
         else if (dir == Vector2.down)
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            targetRotation = Quaternion.Euler(0, 0, 0);
 
         else if (dir == Vector2.left)
-            transform.rotation = Quaternion.Euler(0, 0, -90);
+            targetRotation = Quaternion.Euler(0, 0, -90);
 
         else if (dir == Vector2.right)
-            transform.rotation = Quaternion.Euler(0, 0, 90);
+            targetRotation = Quaternion.Euler(0, 0, 90);
     }
     void Update()
     {
+        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation,720f * Time.deltaTime);
+
+
         if (!moving)
         {
             Vector2 dir = GetPlayerDirection();
 
-            lastDir = dir;
-
-            RotateSprite(dir);
+            if (dir != currentDir)
+            {
+                currentDir = dir;
+                RotateSprite(dir);
+            }
 
             targetPosition = transform.position + (Vector3)(dir * moveDistance);
             moving = true;

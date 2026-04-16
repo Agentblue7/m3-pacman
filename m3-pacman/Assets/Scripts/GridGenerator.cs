@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using TMPro;
-using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.AI;
+
 
 public class GridGenerator : MonoBehaviour
 {
+    public GameObject powerupPrefab;
     public GameObject wallPrefab;
     public GameObject dotPrefab;
     public GameObject playerPrefab;
@@ -23,7 +23,7 @@ public class GridGenerator : MonoBehaviour
 
     string[] levelData = {
         "##########",
-        "#P#..#.#.#",
+        "#P#..#.#U#",
         "#.#0..1..#",
         "#...#..#.#",
         "###.##.#.#",
@@ -87,10 +87,14 @@ public class GridGenerator : MonoBehaviour
                         GameObject playerInstance = Instantiate(playerPrefab, position, Quaternion.identity);
 
                         playerChase.player = playerInstance.transform;
+                        break;
+
+                    case 'U':
+                        Instantiate(powerupPrefab, position, Quaternion.identity);
 
                         break;
 
-                   
+
                 }
             }
             
